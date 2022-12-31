@@ -7,12 +7,11 @@ import {TributeRouter} from "src/TributeRouter.sol";
 
 /// @notice A very simple deployment script.
 contract Deploy is Script {
-
-  /// @notice The main script entrypoint.
-  /// @return router The deployed contract.
-  function run() external returns (TributeRouter router) {
-    vm.startBroadcast();
-    router = new TributeRouter();
-    vm.stopBroadcast();
-  }
+    /// @notice The main script entrypoint.
+    /// @return router The deployed contract.
+    function run() external returns (TributeRouter router) {
+        vm.startBroadcast();
+        router = new TributeRouter();
+        vm.stopBroadcast();
+    }
 }

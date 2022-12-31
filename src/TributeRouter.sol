@@ -158,10 +158,8 @@ contract TributeRouter is
         // Unchecked because the only math done is incrementing
         // count which cannot realistically overflow.
         unchecked {
-            id = count++;
-
             // Store packed variables.
-            tributes[id] = Tribute({
+            tributes[id = count++] = Tribute({
                 from: msg.sender,
                 to: to,
                 forId: forId,
@@ -403,10 +401,8 @@ contract TributeRouter is
         // Unchecked because the only math done is incrementing
         // count which cannot realistically overflow.
         unchecked {
-            id = count++;
-
             // Store packed variables.
-            tributes[id] = Tribute({
+            tributes[id = count++] = Tribute({
                 from: from,
                 to: to,
                 forId: forId,
@@ -690,6 +686,7 @@ contract TributeRouter is
                     )
                 )
             }
+        }
 
             if (!valid) revert InvalidSig();
         }
