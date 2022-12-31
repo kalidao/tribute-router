@@ -686,7 +686,6 @@ contract TributeRouter is
                     )
                 )
             }
-        }
 
             if (!valid) revert InvalidSig();
         }

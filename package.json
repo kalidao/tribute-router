@@ -3,7 +3,7 @@
     "lint": "prettier --write src/**.sol src/utils/**.sol test/**.sol"
   },
   "devDependencies": {
-    "prettier": "^2.8.1",
+    "prettier": "2.8.1",
     "prettier-plugin-solidity": "^1.1.1"
   }
 }
