@@ -53,7 +53,8 @@ contract TributeRouter is
         uint112 amount,
         uint96 forId,
         uint112 forAmount,
-        uint32 deadline
+        uint32 deadline,
+        bytes32 description
     );
 
     event TributeReleased(
@@ -143,6 +144,7 @@ contract TributeRouter is
     /// @param forId The ERC1155 Keep token ID to make tribute for.
     /// @param forAmount The ERC1155 Keep token ID amount to make tribute for.
     /// @param deadline The unix time at which the escrowed tribute will expire.
+    /// @param description Text explaining the purpose or other context of tribute.
     /// @return id The Keep escrow ID assigned incrementally for each escrow tribute.
     /// @dev The `tokenId` will be used where tribute `asset` follows ERC721 or ERC1155.
     function makeTribute(
@@ -153,7 +155,8 @@ contract TributeRouter is
         uint112 amount,
         uint96 forId,
         uint112 forAmount,
-        uint32 deadline
+        uint32 deadline,
+        bytes32 description
     ) public payable virtual nonReentrant returns (uint256 id) {
         // Unchecked because the only math done is incrementing
         // count which cannot realistically overflow.
@@ -201,7 +204,8 @@ contract TributeRouter is
             amount,
             forId,
             forAmount,
-            deadline
+            deadline,
+            description
         );
     }
 
@@ -335,6 +339,7 @@ contract TributeRouter is
     /// @param forId The ERC1155 Keep token ID to make tribute for.
     /// @param forAmount The ERC1155 Keep token ID amount to make tribute for.
     /// @param deadline The unix time at which the escrowed tribute will expire.
+    /// @param description Text explaining the purpose or other context of tribute.
     /// @param v Must produce valid secp256k1 signature from the `owner` along with `r` and `s`.
     /// @param r Must produce valid secp256k1 signature from the `owner` along with `v` and `s`.
     /// @param s Must produce valid secp256k1 signature from the `owner` along with `r` and `v`.
@@ -350,6 +355,7 @@ contract TributeRouter is
         uint96 forId,
         uint112 forAmount,
         uint32 deadline,
+        bytes32 description,
         uint8 v,
         bytes32 r,
         bytes32 s
@@ -364,7 +370,7 @@ contract TributeRouter is
                     keccak256(
                         abi.encode(
                             keccak256(
-                                "Tribute(address from,address to,address asset,uint8 std,uint88 tokenId,uint112 amount,uint96 forId,uint112 forAmount,uint32 deadline)"
+                                "Tribute(address from,address to,address asset,uint8 std,uint88 tokenId,uint112 amount,uint96 forId,uint112 forAmount,uint32 deadline,bytes32 description)"
                             ),
                             from,
                             to,
@@ -375,6 +381,7 @@ contract TributeRouter is
                             forId,
                             forAmount,
                             deadline,
+                            description,
                             nonces[from]++
                         )
                     )
@@ -395,7 +402,8 @@ contract TributeRouter is
             amount,
             forId,
             forAmount,
-            deadline
+            deadline,
+            description
         );
 
         // Unchecked because the only math done is incrementing
@@ -541,13 +549,13 @@ contract TributeRouter is
     }
 
     /// @notice Timed depositor escrow release.
-    /// @param user The account managing Keep tribute withdraw.
+    /// @param from The account claiming Keep tribute withdraw.
     /// @param id The escrow ID to activate tribute release for.
     /// @param v Must produce valid secp256k1 signature from the `owner` along with `r` and `s`.
     /// @param r Must produce valid secp256k1 signature from the `owner` along with `v` and `s`.
     /// @param s Must produce valid secp256k1 signature from the `owner` along with `r` and `v`.
     function withdrawTributeBySig(
-        address user,
+        address from,
         uint256 id,
         uint8 v,
         bytes32 r,
@@ -567,31 +575,31 @@ contract TributeRouter is
                         abi.encode(
                             keccak256("Withdraw(uint256 id)"),
                             id,
-                            nonces[user]++
+                            nonces[from]++
                         )
                     )
                 )
             );
 
             // Check signature recovery.
-            _recoverSig(hash, user, v, r, s);
+            _recoverSig(hash, from, v, r, s);
         }
 
         // Check permission for tribute release.
-        if (user != trib.from) revert Unauthorized();
+        if (from != trib.from) revert Unauthorized();
 
         // Check deadline for tribute release.
         if (block.timestamp <= trib.deadline) revert DeadlinePending();
 
-        if (trib.std == Standard.ETH) safeTransferETH(user, trib.amount);
+        if (trib.std == Standard.ETH) safeTransferETH(from, trib.amount);
         else if (trib.std == Standard.ERC20)
-            safeTransfer(trib.asset, user, trib.amount);
+            safeTransfer(trib.asset, from, trib.amount);
         else if (trib.std == Standard.ERC721)
-            safeTransferFrom(trib.asset, address(this), user, trib.tokenId);
+            safeTransferFrom(trib.asset, address(this), from, trib.tokenId);
         else
             ERC1155STF(trib.asset).safeTransferFrom(
                 address(this),
-                user,
+                from,
                 trib.tokenId,
                 trib.amount,
                 ""
@@ -600,7 +608,7 @@ contract TributeRouter is
         // Delete tribute escrow from storage so it can't be replayed.
         delete tributes[id];
 
-        emit TributeReleased(user, id, false);
+        emit TributeReleased(from, id, false);
     }
 
     function _recoverSig(
