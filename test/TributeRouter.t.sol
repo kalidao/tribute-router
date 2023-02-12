@@ -33,6 +33,8 @@ contract TributeRouterTest is Test, Keep(this) {
 
     bytes32 internal constant mockName =
         0x5445535400000000000000000000000000000000000000000000000000000000;
+    
+    bytes32 internal constant details = 0x7465737400000000000000000000000000000000000000000000000000000000;
 
     function setUp() public payable {
         // Setup mock assets.
@@ -92,7 +94,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         assertEq(from.balance, 0);
@@ -141,7 +144,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         assertEq(from.balance, 0);
@@ -191,7 +195,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         assertEq(mockDai.balanceOf(from), 0);
@@ -241,7 +246,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         assertEq(mockDai.balanceOf(from), 0);
@@ -291,7 +297,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         assertEq(mockNFT.balanceOf(from), 0);
@@ -341,7 +348,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         assertEq(mockNFT.balanceOf(from), 0);
@@ -391,7 +399,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         assertEq(mock1155.balanceOf(from, tokenId), 0);
@@ -441,7 +450,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         assertEq(mock1155.balanceOf(from, tokenId), 0);
@@ -490,7 +500,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         assertEq(from.balance, 0);
@@ -543,7 +554,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         // Check no release.
@@ -588,7 +600,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         vm.expectRevert(InvalidETHTribute.selector);
@@ -600,7 +613,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         vm.expectRevert(InvalidETHTribute.selector);
@@ -612,7 +626,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         // Check no release.
@@ -655,7 +670,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         assertEq(from.balance, 0);
@@ -713,7 +729,8 @@ contract TributeRouterTest is Test, Keep(this) {
             amount,
             forId,
             forAmount,
-            0
+            0,
+            details
         );
 
         assertEq(from.balance, 0);

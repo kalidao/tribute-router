@@ -13,5 +13,5 @@ abstract contract KeepTokenMint {
         uint256 id,
         uint256 amount,
         bytes calldata data
-    ) public virtual;
+    ) public payable virtual;
 }
